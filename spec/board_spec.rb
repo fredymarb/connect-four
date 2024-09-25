@@ -37,4 +37,21 @@ describe Board do
       end
     end
   end
+
+  describe '#switch_player' do
+    it 'switches current player from player1 to player2' do
+      current_player = board.instance_variable_get(:@current_player)
+      expect(current_player).to eq(board.instance_variable_get(:@player1))
+
+      board.switch_player
+      expect(board.instance_variable_get(:@current_player)).to eq(board.instance_variable_get(:@player2))
+    end
+
+    it 'switches the current player back to player1' do
+      # Switch twice to go back to player1
+      board.switch_player
+      board.switch_player
+      expect(board.instance_variable_get(:@current_player)).to eq(board.instance_variable_get(:@player1))
+    end
+  end
 end
