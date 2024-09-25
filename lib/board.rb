@@ -5,7 +5,7 @@ class Board
   COLUMNS = 7
   EMPTY_SLOT = '   '.freeze
 
-  attr_reader :current_player
+  attr_accessor :current_player
 
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
@@ -19,7 +19,7 @@ class Board
     row = '+---+---+---+---+---+---+---+'
 
     puts row
-    @board.each do |line|
+    @grid.each do |line|
       puts "#{col}#{line.join(col)}#{col}"
       puts row
     end

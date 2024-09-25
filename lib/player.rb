@@ -8,7 +8,7 @@ class Player
 
   def ask_column
     loop do
-      print 'choose a column (1 - 7): '
+      print "#{@name}, choose a column (1 - 7): "
       response = ask_input.to_i - 1
       return response if response.between?(0, 6)
 
