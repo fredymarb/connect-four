@@ -5,6 +5,8 @@ class Board
   COLUMNS = 7
   EMPTY_SLOT = '   '.freeze
 
+  attr_reader :current_player
+
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
     @player1 = Player.new('Player 1', ' x ')
@@ -37,5 +39,9 @@ class Board
 
   def switch_player
     @current_player = @current_player == @player1 ? @player2 : @player1
+  end
+
+  def board_full?
+    @grid.flatten.none?(EMPTY_SLOT)
   end
 end
