@@ -72,23 +72,83 @@ describe Board do
         expect(board.board_full?).to be true
       end
     end
-  end
 
-  context 'when board is only partially filled' do
-    before do
-      6.times { board.drop_token(0) }
-      6.times { board.drop_token(1) }
-      6.times { board.drop_token(2) }
+    context 'when board is only partially filled' do
+      before do
+        6.times { board.drop_token(0) }
+        6.times { board.drop_token(1) }
+        6.times { board.drop_token(2) }
+      end
+
+      it 'returns false' do
+        expect(board.board_full?).to be false
+      end
     end
 
-    it 'returns false' do
-      expect(board.board_full?).to be false
+    context 'when board is empty' do
+      it 'returns false' do
+        expect(board.board_full?).to be false
+      end
     end
   end
 
-  context 'when board is empty' do
-    it 'returns false' do
-      expect(board.board_full?).to be false
+  describe '#winner?' do
+    context 'when horizontal win occurs' do
+      before do
+        board.drop_token(0)
+        board.drop_token(1)
+        board.drop_token(2)
+        board.drop_token(3)
+      end
+
+      it 'returns true' do
+        expect(board.winner?).to be true
+      end
+    end
+
+    context 'when vertical win occurs' do
+      before do
+        4.times { board.drop_token(0) }
+      end
+
+      it 'returns true' do
+        expect(board.winner?).to be true
+      end
+    end
+
+    context 'when diagonal win occurs' do
+      before do
+        board.drop_token(0) # Player 1
+
+        board.drop_token(1) # Player 1
+        board.drop_token(1) # Player 1
+
+        board.drop_token(2) # Player 1
+        board.drop_token(2) # Player 1
+        board.drop_token(2) # Player 1
+
+        board.switch_player
+        board.drop_token(3) # Player 2
+        board.drop_token(3) # Player 2
+        board.drop_token(3) # Player 2
+
+        board.switch_player
+        board.drop_token(3) # Player 1 (this completes the diagonal win)
+      end
+
+      it 'returns true' do
+        expect(board.winner?).to be true
+      end
+    end
+
+    context 'when there isnt a winner' do
+      before do
+        3.times { board.drop_token(0) }
+      end
+
+      it 'returns false' do
+        expect(board.winner?).to be false
+      end
     end
   end
 end
