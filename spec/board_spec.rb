@@ -54,4 +54,41 @@ describe Board do
       expect(board.instance_variable_get(:@current_player)).to eq(board.instance_variable_get(:@player1))
     end
   end
+
+  describe '#board_full?' do
+    context 'when board if full' do
+      before do
+        # fill the entire board to the max
+        6.times { board.drop_token(0) }
+        6.times { board.drop_token(1) }
+        6.times { board.drop_token(2) }
+        6.times { board.drop_token(3) }
+        6.times { board.drop_token(4) }
+        6.times { board.drop_token(5) }
+        6.times { board.drop_token(6) }
+      end
+
+      it 'returns true' do
+        expect(board.board_full?).to be true
+      end
+    end
+  end
+
+  context 'when board is only partially filled' do
+    before do
+      6.times { board.drop_token(0) }
+      6.times { board.drop_token(1) }
+      6.times { board.drop_token(2) }
+    end
+
+    it 'returns false' do
+      expect(board.board_full?).to be false
+    end
+  end
+
+  context 'when board is empty' do
+    it 'returns false' do
+      expect(board.board_full?).to be false
+    end
+  end
 end
