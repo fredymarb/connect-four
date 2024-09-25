@@ -1,3 +1,5 @@
+require_relative 'player'
+
 class Board
   ROWS = 6
   COLUMNS = 7
@@ -5,6 +7,9 @@ class Board
 
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
+    @player1 = Player.new('Player 1', ' x ')
+    @player2 = Player.new('Player 2', ' o ')
+    @current_player = @player1
   end
 
   def display_board
@@ -17,5 +22,16 @@ class Board
       puts row
     end
     puts "  #{(1..COLUMNS).to_a.join('   ')}"
+  end
+
+  def drop_token(col)
+    (ROWS - 1).downto(0) do |row|
+      if @grid[row][col] == EMPTY_SLOT
+        @grid[row][col] = @current_player.token
+        return true
+      end
+    end
+
+    false
   end
 end
