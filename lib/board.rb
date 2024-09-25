@@ -34,4 +34,8 @@ class Board
 
     false
   end
+
+  def switch_player
+    @current_player = @current_player == @player1 ? @player2 : @player1
+  end
 end
