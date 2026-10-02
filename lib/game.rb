@@ -9,10 +9,20 @@ class ConnectFour
     @board.current_player = @player1
   end
 
+  def ask_column
+    loop do
+      print "#{@board.current_player.name}, choose a column (1 - 7): "
+      response = ask_input.to_i - 1
+      return response if response.between?(0, 6)
+
+      puts "Invalid entry, try again."
+    end
+  end
+
   def play
     loop do
       @board.display_board
-      @board.drop_token?(@board.current_player.ask_column, @board.current_player.token)
+      @board.drop_token?(ask_column, @board.current_player.token)
 
       if game_over?
         @board.display_board
@@ -24,6 +34,10 @@ class ConnectFour
   end
 
   private
+
+  def ask_input
+    gets.chomp
+  end
 
   def game_over?
     @board.winner?(@board.current_player.token) || @board.board_full?

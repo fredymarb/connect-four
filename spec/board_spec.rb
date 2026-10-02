@@ -3,152 +3,84 @@ require_relative "../lib/board"
 describe Board do
   subject(:board) { described_class.new }
 
-  describe "#drop_token" do
-    context "when column is empty" do
-      let(:grid) { board.instance_variable_get(:@grid) }
-      let(:token) { board.instance_variable_get(:@current_player).token }
-
-      it "drops token at the lowest row" do
-        board.drop_token(0)
-        expect(grid[5][0]).to eq(token)
-      end
-
-      it "returns true" do
-        expect(board.drop_token(0)).to eq true
-      end
-    end
-
-    context "when column is partially full" do
-      let(:grid) { board.instance_variable_get(:@grid) }
-      let(:token) { board.instance_variable_get(:@current_player).token }
-
-      it "drops token in the next available column" do
-        board.drop_token(0) # drop token at the bottom row
-        board.drop_token(0) # drop again at the same column
-
-        expect(grid[4][0]).to eq(token)
-      end
-    end
-
-    context "when column is full" do
-      it "does not drop token and returns false" do
-        6.times { board.drop_token(0) } # Fill the entire column with tokens
-        expect(board.drop_token(0)).to be false
-      end
+  describe "#display_board" do
+    it "displays an empty board with its column numbers" do
+      expect { board.display_board }.to output(
+        /\+---\+---\+---\+---\+---\+---\+---\+.*  1   2   3   4   5   6   7/m
+      ).to_stdout
     end
   end
 
-  describe "#switch_player" do
-    it "switches current player from player1 to player2" do
-      current_player = board.instance_variable_get(:@current_player)
-      expect(current_player).to eq(board.instance_variable_get(:@player1))
-
-      board.switch_player
-      expect(board.instance_variable_get(:@current_player)).to eq(board.instance_variable_get(:@player2))
+  describe "#drop_token?" do
+    it "drops a token into an empty column" do
+      expect(board.drop_token?(0, "X")).to be true
+      expect(board.winner?("X")).to be false
     end
 
-    it "switches the current player back to player1" do
-      # Switch twice to go back to player1
-      board.switch_player
-      board.switch_player
-      expect(board.instance_variable_get(:@current_player)).to eq(board.instance_variable_get(:@player1))
+    it "stacks tokens from the bottom of a column upward" do
+      4.times { board.drop_token?(0, "X") }
+
+      expect(board.winner?("X")).to be true
+    end
+
+    it "returns false when the selected column is full" do
+      6.times { board.drop_token?(0, "X") }
+
+      expect(board.drop_token?(0, "O")).to be false
     end
   end
 
   describe "#board_full?" do
-    context "when board if full" do
-      before do
-        # fill the entire board to the max
-        6.times { board.drop_token(0) }
-        6.times { board.drop_token(1) }
-        6.times { board.drop_token(2) }
-        6.times { board.drop_token(3) }
-        6.times { board.drop_token(4) }
-        6.times { board.drop_token(5) }
-        6.times { board.drop_token(6) }
-      end
+    it "returns false while the board has empty slots" do
+      expect(board.board_full?).to be false
 
-      it "returns true" do
-        expect(board.board_full?).to be true
-      end
+      board.drop_token?(0, "X")
+
+      expect(board.board_full?).to be false
     end
 
-    context "when board is only partially filled" do
-      before do
-        6.times { board.drop_token(0) }
-        6.times { board.drop_token(1) }
-        6.times { board.drop_token(2) }
+    it "returns true when every column is full" do
+      Board::COLUMNS.times do |column|
+        Board::ROWS.times { board.drop_token?(column, "X") }
       end
 
-      it "returns false" do
-        expect(board.board_full?).to be false
-      end
-    end
-
-    context "when board is empty" do
-      it "returns false" do
-        expect(board.board_full?).to be false
-      end
+      expect(board.board_full?).to be true
     end
   end
 
   describe "#winner?" do
-    context "when horizontal win occurs" do
-      before do
-        board.drop_token(0)
-        board.drop_token(1)
-        board.drop_token(2)
-        board.drop_token(3)
-      end
+    it "detects a horizontal win" do
+      4.times { |column| board.drop_token?(column, "X") }
 
-      it "returns true" do
-        expect(board.winner?).to be true
-      end
+      expect(board.winner?("X")).to be true
     end
 
-    context "when vertical win occurs" do
-      before do
-        4.times { board.drop_token(0) }
-      end
+    it "detects a vertical win" do
+      4.times { board.drop_token?(0, "O") }
 
-      it "returns true" do
-        expect(board.winner?).to be true
-      end
+      expect(board.winner?("O")).to be true
     end
 
-    context "when diagonal win occurs" do
-      before do
-        board.drop_token(0) # Player 1
+    it "detects a diagonal win" do
+      board.drop_token?(0, "X")
+      board.drop_token?(1, "O")
+      board.drop_token?(1, "X")
+      2.times { board.drop_token?(2, "O") }
+      board.drop_token?(2, "X")
+      3.times { board.drop_token?(3, "O") }
+      board.drop_token?(3, "X")
 
-        board.drop_token(1) # Player 1
-        board.drop_token(1) # Player 1
-
-        board.drop_token(2) # Player 1
-        board.drop_token(2) # Player 1
-        board.drop_token(2) # Player 1
-
-        board.switch_player
-        board.drop_token(3) # Player 2
-        board.drop_token(3) # Player 2
-        board.drop_token(3) # Player 2
-
-        board.switch_player
-        board.drop_token(3) # Player 1 (this completes the diagonal win)
-      end
-
-      it "returns true" do
-        expect(board.winner?).to be true
-      end
+      expect(board.winner?("X")).to be true
     end
 
-    context "when there isnt a winner" do
-      before do
-        3.times { board.drop_token(0) }
-      end
+    it "returns false when the token has no four-in-a-row" do
+      board.drop_token?(0, "X")
+      board.drop_token?(1, "O")
+      board.drop_token?(2, "X")
+      board.drop_token?(3, "O")
 
-      it "returns false" do
-        expect(board.winner?).to be false
-      end
+      expect(board.winner?("X")).to be false
+      expect(board.winner?("O")).to be false
     end
   end
 end
