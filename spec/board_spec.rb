@@ -30,6 +30,23 @@ describe Board do
     end
   end
 
+  describe "#to_a and #load_grid" do
+    it "round-trips a board without exposing its internal grid" do
+      board.drop_token?(2, "X")
+      restored_board = described_class.new
+
+      restored_board.load_grid(board.to_a)
+
+      expect { restored_board.display_board }.to output(
+        /\|   \|   \| X \|.*  1   2   3   4   5   6   7/m
+      ).to_stdout
+    end
+
+    it "rejects a saved grid with an invalid shape or token" do
+      expect { board.load_grid([ [ "invalid" ] ]) }.to raise_error(ArgumentError, "Invalid saved board")
+    end
+  end
+
   describe "#board_full?" do
     it "returns false while the board has empty slots" do
       expect(board.board_full?).to be false

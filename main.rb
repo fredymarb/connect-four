@@ -1,4 +1,3 @@
-require_relative 'lib/game'
+require_relative "lib/game"
 
-game = ConnectFour.new
-game.play
+ConnectFour.new.play
