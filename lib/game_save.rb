@@ -1,7 +1,7 @@
 require "json"
 
 class GameSave
-  DEFAULT_PATH = File.expand_path("~/.connect_four_save.json")
+  DEFAULT_PATH = File.expand_path("../.connect_four_save.json", __dir__)
 
   def initialize(path: DEFAULT_PATH)
     @path = path

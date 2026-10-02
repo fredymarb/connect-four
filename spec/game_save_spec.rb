@@ -4,6 +4,14 @@ require_relative "../lib/player"
 require "tmpdir"
 
 describe GameSave do
+  describe "DEFAULT_PATH" do
+    it "stores the save file in the project directory" do
+      expect(described_class::DEFAULT_PATH).to eq(
+        File.expand_path("../.connect_four_save.json", __dir__)
+      )
+    end
+  end
+
   around do |example|
     Dir.mktmpdir("connect-four-save-spec") do |directory|
       @save = described_class.new(path: File.join(directory, "saved_game.json"))
