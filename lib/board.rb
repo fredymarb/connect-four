@@ -3,10 +3,18 @@ class Board
   COLUMNS = 7
   EMPTY_SLOT = "   ".freeze
 
-  attr_accessor :current_player
-
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
+  end
+
+  def to_a
+    @grid.map(&:dup)
+  end
+
+  def load_grid(grid)
+    raise ArgumentError, "Invalid saved board" unless valid_grid?(grid)
+
+    @grid = grid.map(&:dup)
   end
 
   def display_board
@@ -42,6 +50,15 @@ class Board
   end
 
   private
+
+  def valid_grid?(grid)
+    grid.is_a?(Array) && grid.size == ROWS && grid.all? { |row| valid_row?(row) }
+  end
+
+  def valid_row?(row)
+    valid_cells = [ EMPTY_SLOT, "X", "O" ]
+    row.is_a?(Array) && row.size == COLUMNS && row.all? { |cell| valid_cells.include?(cell) }
+  end
 
   def horizontal_win?(token)
     @grid.any? do |row|

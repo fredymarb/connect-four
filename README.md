@@ -5,6 +5,12 @@ This is the first Ruby project made with TDD from The Odin Project's Full Stack 
 
 Using TDD, build a command line Connect Four game where two human players can play against each other.
 
+## Playing the game
+
+Run `ruby main.rb` to start. Enter a column number from 1 to 7 to play, or enter
+`q` at the column prompt to save and quit. If a saved game exists the next time
+you launch the game, choose `C` to continue it or `N` to start a new game.
+
 ## Motivation for this project
 
 This is an excellent opportunity to put my newly learned knowledge of TDD and RSpec to the test. Due to no prior TDD experience, and having just learned RSpec, this project will be very challenging.
