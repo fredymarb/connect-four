@@ -1,4 +1,4 @@
-require_relative 'board'
+require_relative "board"
 
 class ConnectFour
   def initialize
@@ -42,7 +42,7 @@ class ConnectFour
     if @board.winner?
       puts "#{@board.current_player.name} won the game"
     else
-      puts 'Board is full, its a draw game'
+      puts "Board is full, its a draw game"
     end
   end
 

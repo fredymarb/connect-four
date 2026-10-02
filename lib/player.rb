@@ -12,7 +12,7 @@ class Player
       response = ask_input.to_i - 1
       return response if response.between?(0, 6)
 
-      puts 'Invalid entry, try again.'
+      puts "Invalid entry, try again."
     end
   end
 

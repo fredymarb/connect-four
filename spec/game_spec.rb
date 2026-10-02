@@ -1,4 +1,4 @@
-require_relative '../lib/game'
+require_relative "../lib/game"
 
 describe ConnectFour do
   # all relevant methods in this class have been

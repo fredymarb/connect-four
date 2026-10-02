@@ -1,22 +1,22 @@
-require_relative 'player'
+require_relative "player"
 
 class Board
   ROWS = 6
   COLUMNS = 7
-  EMPTY_SLOT = '   '.freeze
+  EMPTY_SLOT = "   ".freeze
 
   attr_accessor :current_player
 
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
-    @player1 = Player.new('Player 1', ' x ')
-    @player2 = Player.new('Player 2', ' o ')
+    @player1 = Player.new("Player 1", " x ")
+    @player2 = Player.new("Player 2", " o ")
     @current_player = @player1
   end
 
   def display_board
-    col = '|'
-    row = '+---+---+---+---+---+---+---+'
+    col = "|"
+    row = "+---+---+---+---+---+---+---+"
 
     puts row
     @grid.each do |line|
@@ -53,13 +53,13 @@ class Board
 
   def horizontal_win?
     @grid.any? do |row|
-      row.each_cons(4).any? { |cons| cons.uniq == [@current_player.token] }
+      row.each_cons(4).any? { |cons| cons.uniq == [ @current_player.token ] }
     end
   end
 
   def vertical_win?
     @grid.transpose.any? do |col|
-      col.each_cons(4).any? { |cons| cons.uniq == [@current_player.token] }
+      col.each_cons(4).any? { |cons| cons.uniq == [ @current_player.token ] }
     end
   end
 
@@ -68,7 +68,7 @@ class Board
   end
 
   def diagonal_check?(board)
-    offset = [0, 1, 2, 3]
+    offset = [ 0, 1, 2, 3 ]
 
     (0..ROWS - offset.size).each do |row|
       (0..COLUMNS - offset.size).each do |col|
