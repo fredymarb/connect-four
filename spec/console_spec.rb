@@ -3,6 +3,22 @@ require_relative "../lib/console"
 describe Console do
   subject(:console) { described_class.new }
 
+  describe "#ask_game_mode" do
+    it "selects two-player mode" do
+      allow(console).to receive(:print)
+      allow(console).to receive(:gets).and_return("1")
+
+      expect(console.ask_game_mode).to eq(:two_players)
+    end
+
+    it "selects computer mode" do
+      allow(console).to receive(:print)
+      allow(console).to receive(:gets).and_return("2")
+
+      expect(console.ask_game_mode).to eq(:computer)
+    end
+  end
+
   describe "#ask_column" do
     before do
       allow(console).to receive(:print)
