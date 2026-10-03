@@ -17,6 +17,7 @@ The main goal of this project is to practice Test-Driven Development (TDD). The 
 - Input validation for column selection
 - Full-column detection and retry flow
 - Win detection for horizontal, vertical, and diagonal lines
+- Winning tokens are highlighted in blue in the terminal
 - Draw detection when the board fills up
 - Save-and-quit support with resume-on-launch behavior
 - JSON-based saved game state stored in the project root
