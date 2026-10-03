@@ -11,10 +11,11 @@ class GameSave
     File.exist?(@path)
   end
 
-  def save(board:, current_player:)
+  def save(board:, current_player:, mode: :two_players)
     state = {
       board: board.to_a,
-      current_player: current_player.token
+      current_player: current_player.token,
+      mode: mode.to_s
     }
     File.write(@path, JSON.pretty_generate(state))
   end

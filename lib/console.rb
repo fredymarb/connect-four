@@ -1,4 +1,15 @@
 class Console
+  def ask_game_mode
+    loop do
+      print "Choose a game mode: 1 for two players or 2 to play against the computer: "
+      input = gets.chomp.strip
+      return :two_players if input == "1"
+      return :computer if input == "2"
+
+      puts "Invalid entry, try again."
+    end
+  end
+
   def ask_column(player_name)
     loop do
       print "#{player_name}, choose a column (1 - 7, or q to quit): "
@@ -27,6 +38,10 @@ class Console
 
   def announce_saved_game
     puts "Game saved. You can continue it next time."
+  end
+
+  def announce_computer_move(column)
+    puts "Computer chooses column #{column}."
   end
 
   def announce_winner(player)

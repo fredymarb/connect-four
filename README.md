@@ -14,6 +14,7 @@ The main goal of this project is to practice Test-Driven Development (TDD). The 
 
 - 6x7 game board with token placement logic
 - Two-player turn-based gameplay
+- Option to play against a computer opponent that takes winning moves, blocks immediate wins, and prefers the center
 - Input validation for column selection
 - Full-column detection and retry flow
 - Win detection for horizontal, vertical, and diagonal lines
@@ -32,7 +33,7 @@ bundle install
 ruby main.rb
 ```
 
-At the prompt, enter a column number from 1 to 7 to place a token, or press `q` to save the current game and exit.
+Choose two-player or computer mode when starting a new game. At the prompt, enter a column number from 1 to 7 to place a token, or press `q` to save the current game and exit. In computer mode, the computer plays as Player 2.
 
 If a saved game exists, the next time you launch the app you will be asked whether to continue the saved game or start a new one.
 

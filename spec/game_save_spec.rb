@@ -29,8 +29,19 @@ describe GameSave do
 
       expect(@save.load).to eq(
         "board" => board.to_a,
-        "current_player" => "X"
+        "current_player" => "X",
+        "mode" => "two_players"
       )
+    end
+
+    it "stores computer mode" do
+      @save.save(
+        board: Board.new,
+        current_player: Player.new("Computer", "O"),
+        mode: :computer
+      )
+
+      expect(@save.load.fetch("mode")).to eq("computer")
     end
   end
 
