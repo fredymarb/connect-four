@@ -2,6 +2,9 @@ class Board
   ROWS = 6
   COLUMNS = 7
   EMPTY_SLOT = "   ".freeze
+  BLUE = "\e[34m".freeze
+  RESET = "\e[0m".freeze
+  WIN_DIRECTIONS = [ [ 0, 1 ], [ 1, 0 ], [ 1, 1 ], [ 1, -1 ] ].freeze
 
   def initialize
     @grid = Array.new(ROWS) { Array.new(COLUMNS, EMPTY_SLOT) }
@@ -20,10 +23,11 @@ class Board
   def display_board
     col = "|"
     row = "+---+---+---+---+---+---+---+"
+    winning_positions = winning_positions("X") || winning_positions("O")
 
     puts row
-    @grid.each do |line|
-      cells = line.map { |cell| cell.center(3) }
+    @grid.each_with_index do |line, row_index|
+      cells = render_line(line, row_index, winning_positions)
       puts "#{col}#{cells.join(col)}#{col}"
       puts row
     end
@@ -46,7 +50,7 @@ class Board
   end
 
   def winner?(token)
-    horizontal_win?(token) || vertical_win?(token) || diagonal_win?(token)
+    !winning_positions(token).nil?
   end
 
   private
@@ -60,31 +64,44 @@ class Board
     row.is_a?(Array) && row.size == COLUMNS && row.all? { |cell| valid_cells.include?(cell) }
   end
 
-  def horizontal_win?(token)
-    @grid.any? do |row|
-      row.each_cons(4).any? { |cons| cons.uniq == [ token ] }
+  def render_line(line, row_index, winning_positions)
+    line.each_with_index.map do |cell, column_index|
+      winning = winning_positions&.include?([ row_index, column_index ])
+      render_cell(cell, winning)
     end
   end
 
-  def vertical_win?(token)
-    @grid.transpose.any? do |col|
-      col.each_cons(4).any? { |cons| cons.uniq == [ token ] }
-    end
+  def render_cell(cell, winning)
+    centered_cell = cell.center(3)
+    return centered_cell unless winning
+
+    "#{centered_cell[0]}#{BLUE}#{centered_cell[1]}#{RESET}#{centered_cell[2]}"
   end
 
-  def diagonal_win?(token)
-    diagonal_check?(@grid, token) || diagonal_check?(@grid.map(&:reverse), token)
-  end
-
-  def diagonal_check?(board, token)
-    offset = [ 0, 1, 2, 3 ]
-
-    (0..(ROWS - offset.size)).each do |row|
-      (0..(COLUMNS - offset.size)).each do |col|
-        return true if offset.all? { |i| board[row + i][col + i] == token }
+  def winning_positions(token)
+    ROWS.times do |row|
+      COLUMNS.times do |column|
+        positions = winning_positions_from(row, column, token)
+        return positions unless positions.nil?
       end
     end
 
-    false
+    nil
+  end
+
+  def winning_positions_from(row, column, token)
+    WIN_DIRECTIONS.each do |row_offset, column_offset|
+      positions = 4.times.map do |offset|
+        [ row + (offset * row_offset), column + (offset * column_offset) ]
+      end
+      return positions if winning_line?(positions, token)
+    end
+
+    nil
+  end
+
+  def winning_line?(positions, token)
+    positions.all? { |row, column| row.between?(0, ROWS - 1) && column.between?(0, COLUMNS - 1) } &&
+      positions.all? { |row, column| @grid[row][column] == token }
   end
 end
