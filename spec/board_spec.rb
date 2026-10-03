@@ -9,6 +9,33 @@ describe Board do
         /\+---\+---\+---\+---\+---\+---\+---\+.*  1   2   3   4   5   6   7/m
       ).to_stdout
     end
+
+    it "highlights a horizontal winning combination in blue" do
+      4.times { |column| board.drop_token?(column, "X") }
+
+      blue_token = Regexp.escape("\e[34mX\e[0m")
+      expect { board.display_board }.to output(/(?:.*?#{blue_token}){4}/m).to_stdout
+    end
+
+    it "highlights a vertical winning combination in blue" do
+      4.times { board.drop_token?(0, "O") }
+
+      blue_token = Regexp.escape("\e[34mO\e[0m")
+      expect { board.display_board }.to output(/(?:.*?#{blue_token}){4}/m).to_stdout
+    end
+
+    it "highlights a diagonal winning combination in blue" do
+      board.drop_token?(0, "X")
+      board.drop_token?(1, "O")
+      board.drop_token?(1, "X")
+      2.times { board.drop_token?(2, "O") }
+      board.drop_token?(2, "X")
+      3.times { board.drop_token?(3, "O") }
+      board.drop_token?(3, "X")
+
+      blue_token = Regexp.escape("\e[34mX\e[0m")
+      expect { board.display_board }.to output(/(?:.*?#{blue_token}){4}/m).to_stdout
+    end
   end
 
   describe "#drop_token?" do
